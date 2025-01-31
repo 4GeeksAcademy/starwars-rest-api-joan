@@ -63,7 +63,7 @@ class Users(db.Model):
     def __repr__(self):
         return '<Users %r>' % self.username
     
-class FavoriteTypeEnum(Enum):
+class FavoriteTypeEnum(str, Enum):
     Planet= "Planet"
     People = "People"
     Films = "Films"
@@ -77,9 +77,10 @@ class Favorites(db.Model):
     User_id:int = db.Column(db.Integer, ForeignKey(Users.ID), nullable=False)
     external_ID:int = db.Column(db.Integer, nullable=False)
     name:str = db.Column(db.String(250), nullable=False)
-    type:str = db.Column(db.Enum(FavoriteTypeEnum), nullable=False, unique=True)
+    type:FavoriteTypeEnum = db.Column(db.Enum(FavoriteTypeEnum), nullable=False, unique=True)
     def __repr__(self):
         return '<Favorites %r>' % self.favorites
+
 
 """
     def serialize(self):

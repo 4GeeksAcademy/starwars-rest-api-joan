@@ -84,6 +84,65 @@ def handle_get_film(film_id):
     }
     return jsonify(response_body), 200
 
+@app.route('/people', methods=['GET'])
+def handle_get_people():
+    people_list = People.query.all()
+    response_body = {
+        "content": people_list
+    }
+    return jsonify(response_body), 200
+
+@app.route('/people/<int:person_id>', methods=['GET'])
+def handle_get_person(person_id):
+    person = People.query.get(person_id)
+    response_body = {
+        "content": person
+    }
+    return jsonify(response_body), 200
+
+
+@app.route("/favorites", methods=["GET"])
+def get_favorites():
+    User_id = 1
+    favorites = Favorites.query.filter_by(User_id=User_id).all()
+    return jsonify(favorites), 200
+
+@app.route('/favorites/<int:favorite_id>', methods=['GET'])
+def handle_get_favorite(favorite_id):
+    favorite = Favorites.query.get(favorite_id)
+    response_body = {
+        "content": favorite
+    }
+    return jsonify(response_body), 200
+
+@app.route("/favorites", methods=["POST"])
+def add_favorite():
+    data = request.get_json(force=True)
+    required_fields = {"type", "external_id", "name"}
+
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": "Missing required fields"}), 400
+    
+    User_id = 1
+
+    new_fav = Favorites(
+        external_id=data["external_id"],
+        type=data["type"],
+        name=data["name"],
+        User_id=User_id
+    )
+    db.session.add(new_fav)
+    db.session.commit()
+    return jsonify(new_fav), 201
+
+@app.route("/favorites", methods=["DELETE"])
+def delete_favorite():
+    data = request.get_json(force=True)
+    if not data or "type" not in data or "external_id" not in data:
+        return jsonify({"error": "Favorite not found"}), 404
+    db.session.delete(Favorites)
+    db.session.commit()
+    return jsonify({"message": "Favorite deleted successfully"}), 200
 
 
 # this only runs if `$ python src/app.py` is executed
