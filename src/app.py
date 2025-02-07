@@ -118,7 +118,7 @@ def handle_get_favorite(favorite_id):
 @app.route("/favorites", methods=["POST"])
 def add_favorite():
     data = request.get_json(force=True)
-    required_fields = {"type", "external_id", "name"}
+    required_fields = {"type", "external_ID", "name"}
 
     if not all(field in data for field in required_fields):
         return jsonify({"error": "Missing required fields"}), 400
@@ -126,7 +126,7 @@ def add_favorite():
     User_id = 1
 
     new_fav = Favorites(
-        external_id=data["external_id"],
+        external_ID=data["external_ID"],
         type=data["type"],
         name=data["name"],
         User_id=User_id
@@ -135,12 +135,12 @@ def add_favorite():
     db.session.commit()
     return jsonify(new_fav), 201
 
-@app.route("/favorites", methods=["DELETE"])
-def delete_favorite():
-    data = request.get_json(force=True)
-    if not data or "type" not in data or "external_id" not in data:
+@app.route("/favorites/<int:ID>", methods=["DELETE"])
+def delete_favorite(ID):
+    favorite = Favorites.query.get(ID)
+    if not favorite:
         return jsonify({"error": "Favorite not found"}), 404
-    db.session.delete(Favorites)
+    db.session.delete(favorite)
     db.session.commit()
     return jsonify({"message": "Favorite deleted successfully"}), 200
 
