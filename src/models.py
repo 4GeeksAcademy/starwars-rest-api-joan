@@ -77,7 +77,7 @@ class Favorites(db.Model):
     User_id:int = db.Column(db.Integer, ForeignKey(Users.ID), nullable=False)
     external_ID:int = db.Column(db.Integer, nullable=False)
     name:str = db.Column(db.String(250), nullable=False)
-    type:FavoriteTypeEnum = db.Column(db.Enum(FavoriteTypeEnum), nullable=False, unique=True)
+    type:FavoriteTypeEnum = db.Column(db.Enum(FavoriteTypeEnum), nullable=False, unique=False)
     def __repr__(self):
         return '<Favorites %r>' % self.favorites
 
