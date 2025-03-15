@@ -76,7 +76,7 @@ class Users(db.Model):
     email:str = db.Column(db.String(250), nullable=False, unique=True)
     username:str = db.Column(db.String(250), nullable=False, unique=True)
     password = db.Column(db.VARCHAR(60), nullable=False)
-    favorite = db.relationship("Favorites",backref = "user")
+    favorite = db.relationship("Favorites", backref = "users", lazy=True)
     def __repr__(self):
         return '<Users %r>' % self.username
     def serialize(self):

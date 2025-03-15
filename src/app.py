@@ -3,7 +3,6 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 import os
 import bcrypt
-from sqlalchemy import or_
 from flask import Flask, request, jsonify, url_for
 from flask_migrate import Migrate
 from flask_swagger import swagger
@@ -48,23 +47,22 @@ def handle_invalid_usage(error):
 
 @app.route("/register", methods=["POST"])
 def register():
-    data = request.get_json()
-    user_name = data.get("user_name")
+    data = request.get_json(force=true)
     email = data.get("email")
     password = data.get("password")
 
-    required_fields = ["user_name", "email", "password"]
+    required_fields = ["email", "password"]
 
     if not all(field in data for field in required_fields):
         return jsonify({"error": "Missing required fields"}), 400
 
-    existing_user = db.session.query(Users).filter(or_(Users.username == user_name, Users.email == email)).first()
+    existing_user = db.session.query(Users).filter(Users.email == email).first()
     if existing_user:
         return jsonify({"error": "Username or Email already registered"}), 400
 
     hashedPassword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
-    new_user = Users(username=user_name, email=email, password=hashedPassword)
+    new_user = Users(email=email, password=hashedPassword)
     db.session.add(new_user)
     db.session.commit()
 
@@ -73,7 +71,7 @@ def register():
 
 @app.route("/login", methods=["POST"])
 def get_login():
-    data = request.get_json()
+    data = request.get_json(force=True)
 
     email = data["email"]
     password = data["password"]
@@ -96,9 +94,13 @@ def get_login():
     csrf_token = get_csrf_token(access_token)
     response = jsonify({
         "msg": "login successful",
-        "user": user,
+        "user": {
+            "id": user.id,
+            "email": user.email,
+        },
         "csrf_token": csrf_token
         })
+
     set_access_cookies(response, access_token)
 
     return response
