@@ -60,8 +60,18 @@ class Users(db.Model):
     last_name:str = db.Column(db.String(250), nullable=False)
     email:str = db.Column(db.String(250), nullable=False, unique=True)
     username:str = db.Column(db.String(250), nullable=False, unique=True)
+    password = db.Column(db.VARCHAR(60), nullable=False)
     def __repr__(self):
         return '<Users %r>' % self.username
+    def serialize(self):
+        return {
+            "id": self.id,
+            "email": self.email,
+            "password": self.password,
+            "is_active": self.is_active,
+            "username": self.username
+            # do not serialize the password, its a security breach
+        }
     
 class FavoriteTypeEnum(str, Enum):
     Planet= "Planet"
