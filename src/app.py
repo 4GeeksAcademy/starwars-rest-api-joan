@@ -28,7 +28,8 @@ app.config["JWT_SECRET_KEY"] = ("super-secret")
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_COOKIE_CSRF_PROTECT"] = True
 app.config["JWT_CSRF_IN_COOKIES"] = True
-app.config["JWT_COOKIE_SECURE"] = True 
+app.config["JWT_COOKIE_SECURE"] = True
+ 
 
 jwt = JWTManager(app)
 
@@ -47,7 +48,7 @@ def handle_invalid_usage(error):
 
 @app.route("/register", methods=["POST"])
 def register():
-    data = request.get_json(force=true)
+    data = request.get_json(force=True)
     email = data.get("email")
     password = data.get("password")
 

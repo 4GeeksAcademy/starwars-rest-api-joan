@@ -71,10 +71,10 @@ class Users(db.Model):
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     id:int = db.Column(db.Integer, primary_key=True, unique=True)
-    first_name:str = db.Column(db.String(250), nullable=False)
-    last_name:str = db.Column(db.String(250), nullable=False)
+    first_name:str = db.Column(db.String(250), nullable=True)
+    last_name:str = db.Column(db.String(250), nullable=True)
     email:str = db.Column(db.String(250), nullable=False, unique=True)
-    username:str = db.Column(db.String(250), nullable=False, unique=True)
+    username:str = db.Column(db.String(250), nullable=True)
     password = db.Column(db.VARCHAR(60), nullable=False)
     favorite = db.relationship("Favorites", backref = "users", lazy=True)
     def __repr__(self):
